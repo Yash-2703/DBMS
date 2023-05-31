@@ -1,0 +1,183 @@
+Name : Yash Vilas Jondhale
+Roll No : 68
+PRN : UCS21M1068
+Topic : Types of Joins and creation of view.
+------------------------------------------------------------------------------------------------------------------------------------------
+
+mysql> select * from criminal;
++------+-------+---------+-------------+-----------+
+| cid  | cname | case_no | DateOfCrime | Crime     |
++------+-------+---------+-------------+-----------+
+| 1001 | a     |     123 | 2022-02-03  | blocks    |
+| 1002 | b     |     124 | 2022-02-04  | robbery   |
+| 1003 | c     |     125 | 2012-03-02  | car_theft |
++------+-------+---------+-------------+-----------+
+3 rows in set (0.00 sec)
+
+mysql> select * from police;
++-----+-------+---------+---------+-----------+
+| pid | pname | pPost   | psalary | cases     |
++-----+-------+---------+---------+-----------+
+| 101 | Yash  | Chief   |   50000 | robbery   |
+| 102 | sai   | sergent |    9000 | car_theft |
+| 103 | ketan | officer |    5000 | blocks    |
++-----+-------+---------+---------+-----------+
+3 rows in set (0.00 sec)
+
+mysql> select police.cases from police INNER JOIN criminal ON police.cases=criminal.Crime;
++-----------+
+| cases     |
++-----------+
+| blocks    |
+| robbery   |
+| car_theft |
++-----------+
+3 rows in set (0.00 sec)
+
+mysql> select police.cases,criminal.Crime  from police INNER JOIN criminal ON police.cases=criminal.Crime;
++-----------+-----------+
+| cases     | Crime     |
++-----------+-----------+
+| blocks    | blocks    |
+| robbery   | robbery   |
+| car_theft | car_theft |
++-----------+-----------+
+3 rows in set (0.00 sec)
+
+mysql> select police.cases from police LEFT JOIN criminal ON police.cases=criminal.Crime;
++-----------+
+| cases     |
++-----------+
+| robbery   |
+| car_theft |
+| blocks    |
++-----------+
+3 rows in set (0.00 sec)
+
+mysql> select police.pid from police LEFT JOIN criminal ON police.pid=criminal.cid;
++-----+
+| pid |
++-----+
+| 101 |
+| 102 |
+| 103 |
++-----+
+3 rows in set (0.00 sec)
+
+mysql> select cases from police LEFT JOIN criminal ON police.pid=criminal.cid;
++-----------+
+| cases     |
++-----------+
+| robbery   |
+| car_theft |
+| blocks    |
++-----------+
+3 rows in set (0.01 sec)
+
+mysql> insert into criminal values(1004,'d',126,'2020-02-04','bank'),(1005,'e',127,'2015-03-02','theft');
+Query OK, 2 rows affected (0.01 sec)
+Records: 2  Duplicates: 0  Warnings: 0
+
+mysql> select cases from police LEFT JOIN criminal ON police.pid=criminal.cid;
++-----------+
+| cases     |
++-----------+
+| robbery   |
+| car_theft |
+| blocks    |
++-----------+
+3 rows in set (0.00 sec)
+
+mysql> select * from criminal;
++------+-------+---------+-------------+-----------+
+| cid  | cname | case_no | DateOfCrime | Crime     |
++------+-------+---------+-------------+-----------+
+| 1001 | a     |     123 | 2022-02-03  | blocks    |
+| 1002 | b     |     124 | 2022-02-04  | robbery   |
+| 1003 | c     |     125 | 2012-03-02  | car_theft |
+| 1004 | d     |     126 | 2020-02-04  | bank      |
+| 1005 | e     |     127 | 2015-03-02  | theft     |
++------+-------+---------+-------------+-----------+
+5 rows in set (0.00 sec)
+
+mysql> select cases from police RIGHT JOIN criminal ON police.pid=criminal.cid;
++-------+
+| cases |
++-------+
+| NULL  |
+| NULL  |
+| NULL  |
+| NULL  |
+| NULL  |
++-------+
+5 rows in set (0.00 sec)
+
+mysql> alter table police add caseNo int(10);
+Query OK, 0 rows affected, 1 warning (0.05 sec)
+Records: 0  Duplicates: 0  Warnings: 1
+
+mysql> insert into police(caseNO) values(123);
+ERROR 1364 (HY000): Field 'pid' doesn't have a default value
+mysql> select * from police;
++-----+-------+---------+---------+-----------+--------+
+| pid | pname | pPost   | psalary | cases     | caseNo |
++-----+-------+---------+---------+-----------+--------+
+| 101 | Yash  | Chief   |   50000 | robbery   |   NULL |
+| 102 | sai   | sergent |    9000 | car_theft |   NULL |
+| 103 | ketan | officer |    5000 | blocks    |   NULL |
++-----+-------+---------+---------+-----------+--------+
+3 rows in set (0.00 sec)
+
+mysql> update police set caseNo=123 where pid=101;
+Query OK, 1 row affected (0.01 sec)
+Rows matched: 1  Changed: 1  Warnings: 0
+
+mysql> select cases from police RIGHT JOIN criminal ON police.pid=criminal.cid;
++-------+
+| cases |
++-------+
+| NULL  |
+| NULL  |
+| NULL  |
+| NULL  |
+| NULL  |
++-------+
+5 rows in set (0.00 sec)
+
+mysql> select * from police;
++-----+-------+---------+---------+-----------+--------+
+| pid | pname | pPost   | psalary | cases     | caseNo |
++-----+-------+---------+---------+-----------+--------+
+| 101 | Yash  | Chief   |   50000 | robbery   |    123 |
+| 102 | sai   | sergent |    9000 | car_theft |   NULL |
+| 103 | ketan | officer |    5000 | blocks    |   NULL |
++-----+-------+---------+---------+-----------+--------+
+3 rows in set (0.01 sec)
+
+mysql> select caseNo from police RIGHT JOIN criminal ON police.caseNo=criminal.case_no;
++--------+
+| caseNo |
++--------+
+|    123 |
+|   NULL |
+|   NULL |
+|   NULL |
+|   NULL |
++--------+
+5 rows in set (0.00 sec)
+
+-------------------------------------------------
+View
+----------------------------------------------
+
+mysql> create view cop as select * from police where psalary>5000;
+Query OK, 0 rows affected (0.01 sec)
+
+mysql> select * from cop;
++-----+-------+---------+---------+-----------+--------+
+| pid | pname | pPost   | psalary | cases     | caseNo |
++-----+-------+---------+---------+-----------+--------+
+| 101 | Yash  | Chief   |   50000 | robbery   |    123 |
+| 102 | sai   | sergent |    9000 | car_theft |   NULL |
++-----+-------+---------+---------+-----------+--------+
+2 rows in set (0.00 sec)
