@@ -1,1 +1,147 @@
+  Name : Yash Vilas Jondhale
+  Roll No : 68
+  PRN : UCS21M1068
+  topic : Basic Operations on database and table.
+------------------------------------------------------------------------------------------------------------------------------------------
+
+
+vboxuser@Ubuntu22:~$ sudo mysql -u root
+[sudo] password for vboxuser: 
+Welcome to the MySQL monitor.  Commands end with ; or \g.
+Your MySQL connection id is 8
+Server version: 8.0.32-0ubuntu0.22.04.2 (Ubuntu)
+
+Copyright (c) 2000, 2023, Oracle and/or its affiliates.
+
+Oracle is a registered trademark of Oracle Corporation and/or its
+affiliates. Other names may be trademarks of their respective
+owners.
+
+Type 'help;' or '\h' for help. Type '\c' to clear the current input statement.
+
+mysql> show databases;
++--------------------+
+| Database           |
++--------------------+
+| PRMS               |
+| data               |
+| hotel_reservation  |
+| information_schema |
+| mysql              |
+| performance_schema |
+| prshant            |
+| sai                |
+| sys                |
+| test               |
+| yash               |
++--------------------+
+11 rows in set (0.08 sec)
+
+mysql> create database pms;
+Query OK, 1 row affected (0.02 sec)
+
+mysql> use pms;
+Database changed
+mysql> create table police(pid int(3) Primary key,pname varchar(25) Not Null,pPost varchar(10),psalary int(10),cases varchar(25));
+Query OK, 0 rows affected, 2 warnings (0.04 sec)
+
+mysql> create table criminal(cid int(4) Primary key,cname varchar(25) Not Null,case_no int(10) Not Null, DateOfCrime Date,Crime varchar(25) Not Null);
+Query OK, 0 rows affected, 2 warnings (0.02 sec)
+
+mysql> create table cases(caseNo int(10),Casename varchar(25),cfine int(25),cid int(4),pid int(3));
+Query OK, 0 rows affected, 4 warnings (0.02 sec)
+
+mysql> show tables;
++---------------+
+| Tables_in_pms |
++---------------+
+| cases         |
+| criminal      |
+| police        |
++---------------+
+3 rows in set (0.00 sec)
+
+mysql> insert into police values(101,'Yash','Chief',10000,'robbery'),(102,'sai','sergent',9000,'car_theft'),(103,'ketan','officer',5000,'blocks');
+Query OK, 3 rows affected (0.01 sec)
+Records: 3  Duplicates: 0  Warnings: 0
+
+mysql> select * from police;
++-----+-------+---------+---------+-----------+
+| pid | pname | pPost   | psalary | cases     |
++-----+-------+---------+---------+-----------+
+| 101 | Yash  | Chief   |   10000 | robbery   |
+| 102 | sai   | sergent |    9000 | car_theft |
+| 103 | ketan | officer |    5000 | blocks    |
++-----+-------+---------+---------+-----------+
+3 rows in set (0.00 sec)
+
+mysql> delete from police where cases='blocks';
+Query OK, 1 row affected (0.00 sec)
+
+mysql> select * from police
+    -> ;
++-----+-------+---------+---------+-----------+
+| pid | pname | pPost   | psalary | cases     |
++-----+-------+---------+---------+-----------+
+| 101 | Yash  | Chief   |   10000 | robbery   |
+| 102 | sai   | sergent |    9000 | car_theft |
++-----+-------+---------+---------+-----------+
+2 rows in set (0.00 sec)
+
+mysql> update police set psalary=50000 where pid=101;
+Query OK, 1 row affected (0.00 sec)
+Rows matched: 1  Changed: 1  Warnings: 0
+
+mysql> select * from police
+    -> ;
++-----+-------+---------+---------+-----------+
+| pid | pname | pPost   | psalary | cases     |
++-----+-------+---------+---------+-----------+
+| 101 | Yash  | Chief   |   50000 | robbery   |
+| 102 | sai   | sergent |    9000 | car_theft |
++-----+-------+---------+---------+-----------+
+2 rows in set (0.00 sec)
+
+mysql> select count(pid) from police;
++------------+
+| count(pid) |
++------------+
+|          2 |
++------------+
+1 row in set (0.08 sec)
+
+mysql> select avg(psalary) from police;
++--------------+
+| avg(psalary) |
++--------------+
+|   29500.0000 |
++--------------+
+1 row in set (0.01 sec)
+
+mysql> select min(psalary) from police;
++--------------+
+| min(psalary) |
++--------------+
+|         9000 |
++--------------+
+1 row in set (0.01 sec)
+
+mysql> select pname from police;
++-------+
+| pname |
++-------+
+| Yash  |
+| sai   |
++-------+
+2 rows in set (0.00 sec)
+
+mysql> select pname from police where psalary=(select min(psalary) from police);
++-------+
+| pname |
++-------+
+| sai   |
++-------+
+1 row in set (0.00 sec)
+
+mysql> 
 
